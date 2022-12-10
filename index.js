@@ -15,11 +15,11 @@ const morgan = require('morgan')
 const cors = require('cors')
 // Import modules
 const favicon = require('serve-favicon');
+const path = require('path')
 
 
 // send messate for just test
-
-
+app.use(favicon(path.join(__dirname, 'public/', 'favicon.png')));
 
 // Returns a middleware to serve favicon
 // app.use(favicon(__dirname + '/favicon.png'));
@@ -44,7 +44,7 @@ const options = {
 
 const swaggerSpac = swaggerJsDoc(options)
 app.use('/api-doc',swaggerUI.serve, swaggerUI.setup(swaggerSpac))
-
+app.disable('etag');
 
 
 app.use(express.urlencoded({ extended: true }));
@@ -57,7 +57,7 @@ const adminRegistration = require('./routers/adminRegistration')
 const collectionRoutes = require('./routers/collections')
 const nftRouter = require('./routers/NFTRoutes')
 const viewAndLikes = require("./routers/likesAndFollow.js")
-const IndexRouter = require('./routers/indexRoute')
+// const IndexRouter = require('./routers/indexRoute')
 
 // USE ROUTES AS GLOBARL MIDDLEWARE
 app.use('/api', profileRoute)
@@ -65,13 +65,33 @@ app.use('/api', adminRegistration)
 app.use('/api', collectionRoutes)
 app.use('/api', nftRouter)
 app.use('/api', viewAndLikes)
-app.use(IndexRouter)
+// app.use(IndexRouter)
 
 app.use(cors())
 
 // express fiel uploads
 
 
+
+
+app.get('/', async (req,res)=>{
+        try{
+            
+            res.status(200).json({msg : "Eden Fort Backend working successfully" })
+        }catch(err){
+            res.status(500).json({msg : "server error"})
+        }
+})
+
+
+app.get('*', async (req,res)=>{
+    try{
+        
+        res.status(404).json({msg : "page not Found" })
+    }catch(err){
+        res.status(500).json({msg : "server error"})
+    }
+})
 
 
 // listening app on this port number (this is server)
